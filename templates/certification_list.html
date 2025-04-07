@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Certifications</title>
+  </head>
+  <body>
+    <h1>All Operator Certifications</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>TAC Number</th>
+          <th>Picture</th>
+          <th>Name</th>
+          <th>ID Number</th>
+          <th>Issued Date</th>
+          <th>Expiry Date</th>
+          <th>Company</th>
+          <th>Project</th>
+          <th>Trainer</th>
+          <th>Approver</th>
+          <th>ENR Number</th>
+          <th>Level/Categories</th>
+          <th>QR Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for cert in certifications %}
+          <tr>
+            <td>{{ cert.tac_number }}</td>
+            <td>
+              {% if cert.profile_pic %}
+                <img src="{{ cert.profile_pic.url }}" alt="Profile Picture" width="50" />
+              {% else %}
+                No Profile Picture
+              {% endif %}
+            </td>
+            <td>{{ cert.name }}</td>
+            <td>{{ cert.id_number }}</td>
+            <td>{{ cert.issued_date }}</td>
+            <td>{{ cert.expiry_date }}</td>
+            <td>{{ cert.company }}</td>
+            <td>{{ cert.project }}</td>
+            <td>{{ cert.trainer }}</td>
+            <td>{{ cert.approver }}</td>
+            <td>{{ cert.enr_number }}</td>
+            <td>{{ cert.level_categories }}</td>
+            <td>
+              <!-- QR Code generated dynamically from the 'generate_qr_code' view -->
+              <img src="{% url 'generate_qr_code' cert.tac_number %}" alt="QR Code" width="100" />
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="12">No certifications found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

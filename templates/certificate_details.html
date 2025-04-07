@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificate Details</title>
+  </head>
+  <body>
+    <h1>Certificate Details</h1>
+
+    <table border="1">
+      <tr>
+        <th>TAC Number</th>
+        <td>{{ certificate.tac_number }}</td>
+      </tr>
+      <tr>
+        <th>Profile</th>
+        <td>
+          {% if certificate.profile_pic %}
+            <img src="{{ certificate.profile_pic.url }}" alt="Profile Picture" width="50" />
+          {% else %}
+            No Profile Picture
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{ certificate.name }}</td>
+      </tr>
+      <tr>
+        <th>ID Number</th>
+        <td>{{ certificate.id_number }}</td>
+      </tr>
+      <tr>
+        <th>Issued Date</th>
+        <td>{{ certificate.issued_date }}</td>
+      </tr>
+      <tr>
+        <th>Expiry Date</th>
+        <td>{{ certificate.expiry_date }}</td>
+      </tr>
+      <tr>
+        <th>Company</th>
+        <td>{{ certificate.company }}</td>
+      </tr>
+      <tr>
+        <th>Project</th>
+        <td>{{ certificate.project }}</td>
+      </tr>
+      <tr>
+        <th>Trainer</th>
+        <td>{{ certificate.trainer }}</td>
+      </tr>
+      <tr>
+        <th>Approver</th>
+        <td>{{ certificate.approver }}</td>
+      </tr>
+      <tr>
+        <th>ENR Number</th>
+        <td>{{ certificate.enr_number }}</td>
+      </tr>
+      <tr>
+        <th>Level/Categories</th>
+        <td>{{ certificate.level_categories }}</td>
+      </tr>
+    </table>
+
+    <h2>QR Code</h2>
+    <!-- QR Code generated dynamically using the URL to the certificate page -->
+    <img src="{% url 'generate_qr_code' certificate.tac_number %}" alt="QR Code" width="150" />
+  </body>
+</html>
