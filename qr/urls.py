@@ -6,6 +6,6 @@ urlpatterns = [
     path('certifications/', certification_list, name='certification_list'),
     path('qr_code/<str:tac_number>/', generate_qr_code, name='generate_qr_code'),
     path('certificate/<str:tac_number>/', certificate_details, name='certificate_details'),  # New URL for certificate details
-    path("login/", login_view, name="login"),
+    path("", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
 ]

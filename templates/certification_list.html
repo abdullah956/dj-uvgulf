@@ -9,7 +9,12 @@
       rel="stylesheet"
     />
     <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJp3p0p2Htb0p2MG7sCugS7Xs2hO9uEmOZelAa0PpL3gRbD7vtr7bDl6l55r" crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEJp3p0p2Htb0p2MG7sCugS7Xs2hO9uEmOZelAa0PpL3gRbD7vtr7bDl6l55r"
+      crossorigin="anonymous"
+    />
 
     <title>All Certifications</title>
     <style>
@@ -20,13 +25,50 @@
       .card_text {
         font-size: 18px;
         text-transform: uppercase;
+        font-weight: 600;
+      }
+      .custom-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 5px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        color: white;
+        transition: background-color 0.3s ease;
+      }
+
+      .logout-btn {
+        background-color: #dc3545; /* red */
+      }
+
+      .logout-btn:hover {
+        background-color: #c82333;
+      }
+
+      .add-btn {
+        background-color: #007bff; /* blue */
+      }
+
+      .add-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .admin-btn {
+        background-color: #6c757d; /* gray */
+      }
+
+      .admin-btn:hover {
+        background-color: #5a6268;
       }
     </style>
   </head>
   <body>
-    <a href="{% url 'logout' %}">Logout</a>  <!-- Link to login page -->
-<a href="{% url 'add_certification' %}">Add Certification</a>  <!-- Link to add_certification page -->
-<a href="{% url 'admin:index' %}">Admin</a>
+    <a href="{% url 'logout' %}" class="custom-btn logout-btn">Logout</a>
+    <a href="{% url 'add_certification' %}" class="custom-btn add-btn"
+      >Add Certification</a
+    >
+    <a href="{% url 'admin:index' %}" class="custom-btn admin-btn">Admin</a>
 
     <h1>All Operator Certifications</h1>
     <div class="table-responsive">
@@ -98,8 +140,10 @@
                     '{% if cert.profile_pic %}{{ cert.profile_pic.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}',
                     '{% url 'generate_qr_code' cert.tac_number %}',
                     '{% static 'images/front2.png' %}',
-                    '{% static 'images/image.png' %}',
+                    '{% static 'images/back2.png' %}',
                     '{% static 'images/down.png' %}',
+                    '{% static 'images/up.png' %}',
+                    '{% static 'images/logo.png' %}',
                    
                   )"
               >
@@ -114,9 +158,7 @@
           {% endfor %}
         </tbody>
       </table>
-
     </div>
-    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -140,6 +182,8 @@
         frontImage,
         backImage,
         downImage,
+        upImage,
+        logo
       ) {
         const idCard = document.createElement("div");
         idCard.style.display = "flex";
@@ -163,6 +207,8 @@
         frontCard.style.background = `url('${frontImage}') no-repeat center center`;
         frontCard.style.backgroundSize = "contain";
         frontCard.innerHTML = `
+                  <img src="${logo}" style="position: absolute; top: 28px; left: 21px; width: 216px; height: 86px;" />
+
           <p  style="position: absolute; top: 95px; left: 56px;color:red;"><strong>${tacNumber}</strong></p>
           
          <div style="position: absolute; top: 110px; left: 168px; width: 295px; font-weight:bold;">
@@ -180,6 +226,8 @@
           <p style="position: absolute; top: 283px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
              ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}
           </p>
+          <img src="${upImage}" style="position: absolute; top: 300px; left: 0px; width:600px;height 150px;" />
+
 
         `;
 
@@ -198,7 +246,7 @@
           <p class="card_text" style="position: absolute; top: 15px; left: 32px;"><strong>Trained by: ${trainer}</strong></p>
           <p class="card_text" style="position: absolute; top: 43px; left: 32px;"><strong>Approved by: ${approver}</strong></p>
           <p class="card_text" style="position: absolute; top: 128px; left: 288px; "><strong>${levelCategories}</strong></p>
-            <p style="position: absolute; top: 263px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <p style="position: absolute; top: 267px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
              ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}
           </p>
           <img src="${downImage}" style="position: absolute; top: 285px; left: 0px; width:600px;height 100px;" />
@@ -211,7 +259,7 @@
         idCard.appendChild(backCard);
         document.body.appendChild(idCard);
 
-        html2canvas(idCard, { scale: 2.5, useCORS: true }).then((canvas) => {
+        html2canvas(idCard, { scale: 3, useCORS: true }).then((canvas) => {
           const { jsPDF } = window.jspdf;
           let pdf = new jsPDF({
             orientation: "portrait",
@@ -237,7 +285,10 @@
       }
     </script>
     <!-- Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-GLhlTQ8iRABdLJqgDkzjfpEXt0FqU5G9r0J3he4vw6dOAMjEr7gxt93Zm5uJnk2R" crossorigin="anonymous"></script>
-
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-GLhlTQ8iRABdLJqgDkzjfpEXt0FqU5G9r0J3he4vw6dOAMjEr7gxt93Zm5uJnk2R"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
