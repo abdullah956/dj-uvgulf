@@ -24,6 +24,10 @@
     </style>
   </head>
   <body>
+    <a href="{% url 'logout' %}">Logout</a>  <!-- Link to login page -->
+<a href="{% url 'add_certification' %}">Add Certification</a>  <!-- Link to add_certification page -->
+<a href="{% url 'admin:index' %}">Admin</a>
+
     <h1>All Operator Certifications</h1>
     <div class="table-responsive">
       <table border="1">

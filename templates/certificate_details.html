@@ -1,14 +1,29 @@
-<!DOCTYPE html>
+
+{% load static %}<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&family=Roboto:wght@400&display=swap"
+      rel="stylesheet"
+    />
     <title>Certificate Details</title>
-  </head>
-  <body>
-    <h1>Certificate Details</h1>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+      }
 
-    <table border="1">
+      .card_text {
+        font-size: 18px;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body style="background-color: black;">
+    
+
+    <table border="1" style="display: none;">
       <tr>
         <th>TAC Number</th>
         <td>{{ certificate.tac_number }}</td>
@@ -63,10 +78,181 @@
         <th>Level/Categories</th>
         <td>{{ certificate.level_categories }}</td>
       </tr>
+      <tr>
+        <button
+                class="btn btn-dark download-btn"
+                style="display: none;"
+                onclick="downloadCardAsPDF(
+                    '{{ cert.tac_number }}',
+                    '{{ cert.name }}',
+                    '{{ cert.company }}',
+                    '{{ cert.project }}',
+                    '{{ cert.id_number }}',
+                    '{{ cert.issued_date|date:'d-M-Y' }}',
+                    '{{ cert.expiry_date|date:'d-M-Y' }}',
+                    '{{ cert.level_categories }}',
+                    '{{ cert.trainer }}',
+                    '{{ cert.approver }}',
+                    '{{ cert.enr_number }}',
+                    '{% if cert.profile_pic %}{{ cert.profile_pic.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}',
+                    {% comment %} '{% url 'generate_qr_code' cert.tac_number %}', {% endcomment %}
+                    '{% static 'images/front2.png' %}',
+                    '{% static 'images/image.png' %}',
+                    '{% static 'images/down.png' %}',
+                   
+                  )"
+              >
+                Download
+              </button>
+
+      </tr>
     </table>
 
     <h2>QR Code</h2>
     <!-- QR Code generated dynamically using the URL to the certificate page -->
-    <img src="{% url 'generate_qr_code' certificate.tac_number %}" alt="QR Code" width="150" />
+    {% comment %} <img src="{% url 'generate_qr_code' certificate.tac_number %}" alt="QR Code" width="150" /> {% endcomment %}
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+      window.onload = function() {
+    setTimeout(() => {
+        downloadCardAsPDF(
+            "{{ certificate.tac_number }}",
+            "{{ certificate.name }}",
+            "{{ certificate.company }}",
+            "{{ certificate.project }}",
+            "{{ certificate.id_number }}",
+            "{{ certificate.issued_date|date:'d-M-Y' }}",
+            "{{ certificate.expiry_date|date:'d-M-Y' }}",
+            "{{ certificate.level_categories }}",
+            "{{ certificate.trainer }}",
+            "{{ certificate.approver }}",
+            "{{ certificate.enr_number }}",
+            "{% if certificate.profile_pic %}{{ certificate.profile_pic.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}",
+            "{% url 'generate_qr_code' certificate.tac_number %}",
+            "{% static 'images/front2.png' %}",
+            "{% static 'images/image.png' %}",
+            "{% static 'images/down.png' %}"
+        );
+    }, 2000); // Adding a slight delay ensures images are loaded
+};
+
+      function downloadCardAsPDF(
+        tacNumber,
+        name,
+        company,
+        project,
+        idNumber,
+        issuedDate,
+        expiryDate,
+        levelCategories,
+        trainer,
+        approver,
+        enrNumber,
+        profilePicUrl,
+        qrCodeUrl,
+        frontImage,
+        backImage,
+        downImage,
+      ) {
+        const idCard = document.createElement("div");
+        idCard.style.display = "flex";
+        idCard.style.flexDirection = "column";
+        idCard.style.alignItems = "center";
+        idCard.style.padding = "10px";
+        idCard.style.background = "#fff";
+        idCard.style.width = "600px";
+        idCard.style.height = "800px";
+        idCard.style.position = "absolute";
+        idCard.style.left = "-9999px";
+
+        let formattedIssueDate = issuedDate;
+        let formattedExpiryDate = expiryDate;
+
+        // Front of the card
+        const frontCard = document.createElement("div");
+        frontCard.style.width = "600px";
+        frontCard.style.height = "400px";
+        frontCard.style.position = "relative";
+        frontCard.style.background = `url('${frontImage}') no-repeat center center`;
+        frontCard.style.backgroundSize = "contain";
+        frontCard.innerHTML = `
+          <p  style="position: absolute; top: 95px; left: 56px;color:red;"><strong>${tacNumber}</strong></p>
+          
+         <div style="position: absolute; top: 110px; left: 168px; width: 295px; font-weight:bold;">
+           <p class="card_text" style="margin: 0 0 2px 0; word-wrap: break-word;"><strong></strong>Name: ${name}</p>
+           <p class="card_text" style="margin: 0 0 2px 0;"><strong></strong>ID No.: ${idNumber}</p>
+           <p class="card_text" style="margin: 0 0 2px 0;"><strong></strong>Issued: ${formattedIssueDate}</p>
+           <p class="card_text" style="margin: 0 0 2px 0;"><strong></strong>Expiry: ${formattedExpiryDate}</p>
+           <p class="card_text" style="margin: 0 0 2px 0;"><strong></strong>Company: ${company}</p>
+           <p class="card_text" style="margin: 0 0 2px 0;"><strong></strong>Project: ${project}</p>
+         </div>
+
+          <img src="${profilePicUrl}" style="position: absolute; top: 138px; left: 31px; width: 126px; height: 124px;" />
+          <p  style="position: absolute; top: 240px; left: 48px;color:white;font-size:8px;font-weight:200;"><strong>${idNumber} / ${tacNumber}</strong></p>
+          <img src="${qrCodeUrl}" style="position: absolute; top: 115px; right: 18px; width: 120px; " />
+          <p style="position: absolute; top: 283px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+             ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}
+          </p>
+
+        `;
+
+        // Back of the card
+        const backCard = document.createElement("div");
+        backCard.style.width = "600px";
+        backCard.style.height = "400px";
+        backCard.style.position = "relative";
+        backCard.style.background = `url('${backImage}') no-repeat center center`;
+        // backCard.style.backgroundColor = "red";
+        backCard.style.backgroundSize = "contain";
+        backCard.innerHTML = `
+          
+          <p class="card_text" style="position: absolute; top: 15px; right: 30px; font-weight: bold;">ENR NO</p>
+          <p class="card_text" style="position: absolute; top: 43px; right: 20px; font-weight: bold;color:red;">${enrNumber}</p>
+          <p class="card_text" style="position: absolute; top: 15px; left: 32px;"><strong>Trained by: ${trainer}</strong></p>
+          <p class="card_text" style="position: absolute; top: 43px; left: 32px;"><strong>Approved by: ${approver}</strong></p>
+          <p class="card_text" style="position: absolute; top: 128px; left: 288px; "><strong>${levelCategories}</strong></p>
+            <p style="position: absolute; top: 263px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+             ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}
+          </p>
+          <img src="${downImage}" style="position: absolute; top: 285px; left: 0px; width:600px;height 100px;" />
+
+       
+        `;
+
+        // Append cards and generate PDF
+        idCard.appendChild(frontCard);
+        idCard.appendChild(backCard);
+        document.body.appendChild(idCard);
+
+        html2canvas(idCard, { scale: 2.5, useCORS: true }).then((canvas) => {
+          const { jsPDF } = window.jspdf;
+          let pdf = new jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4",
+          });
+          let imgData = canvas.toDataURL("image/png");
+          pdf.addImage(imgData, "PNG", 10, 10, 190, 250);
+          pdf.save(`ID_Card_${name}.pdf`);
+          document.body.removeChild(idCard);
+        });
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return (
+          ("0" + date.getDate()).slice(-2) +
+          "/" +
+          ("0" + (date.getMonth() + 1)).slice(-2) +
+          "/" +
+          date.getFullYear()
+        );
+      }
+    </script>
   </body>
 </html>
