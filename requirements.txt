@@ -3,3 +3,4 @@ pillow
 qrcode
 xhtml2pdf
 qrcode[pil]
+whitenoise
