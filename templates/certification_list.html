@@ -20,6 +20,7 @@
     <style>
       body {
         font-family: "Roboto", sans-serif;
+        letter-spacing: 0.8px;
       }
 
       .card_text {
@@ -79,6 +80,7 @@
             <th>Picture</th>
             <th>Name</th>
             <th>ID Number</th>
+            <th>Operator</th>
             <th>Issued Date</th>
             <th>Expiry Date</th>
             <th>Company</th>
@@ -106,6 +108,7 @@
             </td>
             <td>{{ cert.name }}</td>
             <td>{{ cert.id_number }}</td>
+            <td>{{ cert.operator }}</td>
             <td>{{ cert.issued_date }}</td>
             <td>{{ cert.expiry_date }}</td>
             <td>{{ cert.company }}</td>
@@ -127,6 +130,7 @@
                 class="btn btn-dark download-btn"
                 onclick="downloadCardAsPDF(
                     '{{ cert.tac_number }}',
+                    '{{ cert.operator}}',
                     '{{ cert.name }}',
                     '{{ cert.company }}',
                     '{{ cert.project }}',
@@ -167,6 +171,7 @@
     <script>
       function downloadCardAsPDF(
         tacNumber,
+        operator,
         name,
         company,
         project,
@@ -208,6 +213,8 @@
         frontCard.style.backgroundSize = "contain";
         frontCard.innerHTML = `
                   <img src="${logo}" style="position: absolute; top: 28px; left: 21px; width: 216px; height: 86px;" />
+                  <p  style="position: absolute; top: 15px; right: 126px;color:black;font-size:18px;"><strong>CERTIFIED</strong></p>
+                  <p  style="position: absolute; top: 35px; right: 50px;color:black;width:240px;text-align: center;background-color:;font-size:18px;"><strong>${operator}</strong></p>
 
           <p  style="position: absolute; top: 95px; left: 56px;color:red;"><strong>${tacNumber}</strong></p>
           
@@ -221,7 +228,7 @@
          </div>
 
           <img src="${profilePicUrl}" style="position: absolute; top: 138px; left: 31px; width: 126px; height: 124px;" />
-          <p  style="position: absolute; top: 240px; left: 48px;color:white;font-size:8px;font-weight:200;"><strong>${idNumber} / ${tacNumber}</strong></p>
+          <p  style="position: absolute; top: 240px; left: 44px;color:white;font-size:8px;font-weight:200;"><strong>${idNumber} / ${tacNumber}</strong></p>
           <img src="${qrCodeUrl}" style="position: absolute; top: 115px; right: 18px; width: 120px; " />
           <p style="position: absolute; top: 283px; left: 0px; font-size: 8px; font-weight: 200; background-color: #E9F8FF; color: grey; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
              ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}   ${idNumber}   ${tacNumber}

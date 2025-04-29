@@ -3,6 +3,7 @@ from django.db import models
 
 class OperatorCertification(models.Model):
     tac_number = models.CharField(max_length=20, unique=True)
+    operator = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     id_number = models.CharField(max_length=50, unique=True)
     issued_date = models.DateField()

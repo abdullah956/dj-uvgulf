@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from qrcode.constants import ERROR_CORRECT_L
 
 @login_required
 def add_certification(request):
@@ -25,6 +26,7 @@ def certification_list(request):
     certifications = OperatorCertification.objects.all()
     return render(request, 'certification_list.html', {'certifications': certifications})
 
+
 def generate_qr_code(request, tac_number):
     # Retrieve the certificate using the TAC number
     certificate = get_object_or_404(OperatorCertification, tac_number=tac_number)
@@ -32,12 +34,22 @@ def generate_qr_code(request, tac_number):
     # Generate a URL to the certificate details page
     certificate_url = request.build_absolute_uri(f'/certificate/{tac_number}/')
 
-    # Generate QR code with the URL to the certificate
-    img = qrcode.make(certificate_url)
+    # Generate QR code with reduced border
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=ERROR_CORRECT_L,
+        box_size=10,
+        border=1  # Lower border size to reduce white space
+    )
+    qr.add_data(certificate_url)
+    qr.make(fit=True)
+
+    # Generate the image
+    img = qr.make_image(fill_color="black", back_color="white")
 
     # Save the image to a BytesIO object
     qr_io = BytesIO()
-    img.save(qr_io)
+    img.save(qr_io, format='PNG')
     qr_io.seek(0)
 
     # Return the image as an HTTP response
